@@ -1488,3 +1488,147 @@ body {
 .voting-toast.show {
     transform: translateX(-50%) translateY(0);
 }
+/* ========= FIXED PLAYER NAME ROW - NO NUMBER ICON ON MOBILE ========= */
+@media (max-width: 640px) {
+  .player-name-row .player-number {
+    display: none;
+  }
+  
+  .player-name-row {
+    padding-left: 0.5rem;
+  }
+}
+
+/* ========= COOL VOTE COMPLETION DESIGN - NOT BORING RECTANGLE ========= */
+.vote-count-display {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: #FFE87C;
+  padding: 0.8rem 1rem;
+  border-radius: 60px;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 232, 124, 0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  letter-spacing: 0.5px;
+}
+
+.vote-count-display i {
+  margin-right: 0.5rem;
+  animation: pulseIcon 1s ease-in-out infinite;
+}
+
+@keyframes pulseIcon {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* When all votes are cast - CELEBRATION STYLE */
+.vote-count-display.complete {
+  background: linear-gradient(135deg, #006400 0%, #008800 50%, #00AA00 100%);
+  color: #FFFFFF;
+  border: 1px solid #FFE87C;
+  box-shadow: 0 0 20px rgba(0, 200, 0, 0.5);
+  animation: celebrationGlow 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes celebrationGlow {
+  from { box-shadow: 0 0 10px rgba(0, 200, 0, 0.3); }
+  to { box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
+}
+
+/* ========= COOL IMPOSTER REVEAL DESIGN ========= */
+/* Crew Win - Green Celebration */
+.result-card.win .result-header {
+  background: linear-gradient(135deg, #006400 0%, #00AA00 50%, #006400 100%);
+  animation: winPulse 0.5s ease-out;
+}
+
+@keyframes winPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); text-shadow: 0 0 20px gold; }
+  100% { transform: scale(1); }
+}
+
+/* Imposter Win - Red Dramatic */
+.result-card.loss .result-header {
+  background: linear-gradient(135deg, #4a0000 0%, #8B0000 50%, #4a0000 100%);
+  animation: lossShake 0.5s ease-out;
+}
+
+@keyframes lossShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Result word styling */
+.result-word {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 1rem 0;
+  background: linear-gradient(135deg, #F5F0E0 0%, #FFF8E8 100%);
+  padding: 0.8rem;
+  border-radius: 60px;
+  border: 2px solid #FFE87C;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Confetti effect on win */
+.result-card.win .result-header i {
+  animation: confettiSpin 0.6s ease-out;
+}
+
+@keyframes confettiSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.3); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Dramatic reveal on loss */
+.result-card.loss .result-header i {
+  animation: skullShake 0.4s ease-in-out;
+}
+
+@keyframes skullShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px) rotate(-10deg); }
+  75% { transform: translateX(8px) rotate(10deg); }
+}
+
+/* Result buttons styling */
+.result-buttons {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.btn-end-game {
+  background: linear-gradient(135deg, #333333 0%, #444444 100%);
+  color: #FFE87C;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 60px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  width: 50%;
+  transition: all 0.2s ease;
+}
+
+.btn-end-game:hover {
+  background: linear-gradient(135deg, #444444 0%, #555555 100%);
+  transform: translateY(-2px);
+}
+
+.btn-play-again {
+  width: 50%;
+  margin: 0;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+}
+
+.btn-play-again:hover {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
