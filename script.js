@@ -362,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSetupModal();
     initGameModal();
     initSocialLinks();
+    initFloatingButton();
 });
 
 function initNavigation() {
@@ -409,12 +410,47 @@ function initCategorySelection() {
                 window.selectedCategory = key;
                 const hint = document.querySelector('.play-hint');
                 if (hint) hint.textContent = `ready to play • ${cat.name}`;
+                
+                // Show floating button with animation
+                const floatingBtn = document.getElementById('floatingPlayBtn');
+                if (floatingBtn) {
+                    floatingBtn.style.display = 'flex';
+                    floatingBtn.classList.add('pulse');
+                    setTimeout(() => {
+                        floatingBtn.classList.remove('pulse');
+                    }, 600);
+                }
             });
             categoriesGrid.appendChild(card);
         }
     });
     
     if (playBtn) playBtn.addEventListener('click', () => openSetupModal());
+}
+
+function initFloatingButton() {
+    const floatingBtn = document.getElementById('floatingPlayBtn');
+    if (floatingBtn) {
+        floatingBtn.addEventListener('click', () => {
+            if (window.selectedCategory) {
+                openSetupModal();
+            } else {
+                floatingBtn.classList.add('pulse');
+                setTimeout(() => floatingBtn.classList.remove('pulse'), 600);
+                const hint = document.querySelector('.play-hint');
+                if (hint) {
+                    hint.textContent = '⚠️ Select a category first!';
+                    hint.style.color = '#CC5500';
+                    setTimeout(() => {
+                        if (hint && !window.selectedCategory) {
+                            hint.textContent = 'select a category to begin';
+                            hint.style.color = '#BBBB99';
+                        }
+                    }, 2500);
+                }
+            }
+        });
+    }
 }
 
 // ============ Player Setup Modal ============
@@ -575,22 +611,18 @@ function finishReveal() {
     renderVotingUI();
 }
 
-// ============ FIXED VOTING SYSTEM - Each player votes exactly once ============
 function renderVotingUI() {
     const container = document.getElementById('votingList');
     container.innerHTML = '';
     
-    // Reset votes and tracking
     currentGame.votes = new Array(currentGame.players.length).fill(0);
     currentGame.hasVoted = new Array(currentGame.players.length).fill(false);
     
-    // Add instruction
     const instruction = document.createElement('div');
     instruction.className = 'voting-instruction';
     instruction.innerHTML = '<i class="fas fa-info-circle"></i> Each player clicks ONCE on who they think is the imposter';
     container.appendChild(instruction);
     
-    // Create vote cards for each suspect
     currentGame.players.forEach((player, idx) => {
         const voteCard = document.createElement('div');
         voteCard.className = 'vote-card';
@@ -635,7 +667,6 @@ function renderVotingUI() {
         container.appendChild(voteCard);
     });
     
-    // Add cool vote count display
     const voteCountDisplay = document.createElement('div');
     voteCountDisplay.className = 'vote-count-display';
     voteCountDisplay.id = 'voteCountDisplay';
@@ -685,7 +716,6 @@ function showVotingToast(message, color) {
 }
 
 function revealVerdict() {
-    // Check if all votes have been cast
     const totalVotesCast = currentGame.hasVoted.filter(v => v === true).length;
     if (totalVotesCast < currentGame.players.length) {
         showVotingToast(`⚠️ ${currentGame.players.length - totalVotesCast} player(s) haven't voted yet!`, '#FF8888');
@@ -714,7 +744,6 @@ function showResult(accusedIdx, wasCorrect) {
     const resultHeader = document.getElementById('resultHeader');
     const resultCard = document.querySelector('.result-card');
     
-    // Remove previous classes
     resultCard.classList.remove('win', 'loss');
     
     if (wasCorrect) {
@@ -790,7 +819,6 @@ function initGameModal() {
 }
 
 function initSocialLinks() {
-    // Your social links
     const instaLink = document.getElementById('instaLink');
     const tiktokLink = document.getElementById('tiktokLink');
     const githubLink = document.getElementById('githubLink');
