@@ -604,35 +604,26 @@ function renderVotingUI() {
         `;
         
         voteCard.addEventListener('click', () => {
-            // Count how many players have already voted
             const votedCount = currentGame.hasVoted.filter(v => v === true).length;
             const totalPlayers = currentGame.players.length;
             
-            // Check if all votes are already cast
             if (votedCount >= totalPlayers) {
                 showVotingToast('All players have already voted! Click "Reveal Imposter"', '#FF8888');
                 return;
             }
             
-            // Find the next player who hasn't voted yet
             const nextVoterIndex = currentGame.hasVoted.findIndex(v => v === false);
             if (nextVoterIndex !== -1) {
                 const voterName = currentGame.players[nextVoterIndex];
-                
-                // Mark this voter as having voted
                 currentGame.hasVoted[nextVoterIndex] = true;
-                // Add vote to the selected suspect
                 currentGame.votes[idx]++;
                 updateVoteDisplay();
                 
-                // Show feedback
                 showVotingToast(`${voterName} voted for ${escapeHtml(player)}`, '#FFE87C');
                 
-                // Add visual feedback to the clicked card
                 voteCard.style.transform = 'scale(0.98)';
                 setTimeout(() => { voteCard.style.transform = ''; }, 150);
                 
-                // Check if all votes are now cast
                 const allVoted = currentGame.hasVoted.every(v => v === true);
                 if (allVoted) {
                     setTimeout(() => {
@@ -644,18 +635,17 @@ function renderVotingUI() {
         container.appendChild(voteCard);
     });
     
-    // Add vote count display
+    // Add cool vote count display
     const voteCountDisplay = document.createElement('div');
     voteCountDisplay.className = 'vote-count-display';
     voteCountDisplay.id = 'voteCountDisplay';
-    voteCountDisplay.innerHTML = `<i class="fas fa-chart-simple"></i> Votes cast: 0 / ${currentGame.players.length}`;
+    voteCountDisplay.innerHTML = `<i class="fas fa-chart-simple"></i> 🗳️ VOTES CAST: 0 / ${currentGame.players.length} 🗳️`;
     container.appendChild(voteCountDisplay);
 }
 
 function updateVoteDisplay() {
     const totalVotes = currentGame.votes.reduce((a,b) => a+b, 0);
     
-    // Update progress bars and counts
     currentGame.votes.forEach((count, idx) => {
         const percent = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
         const fill = document.getElementById(`voteFill-${idx}`);
@@ -664,16 +654,15 @@ function updateVoteDisplay() {
         if (countSpan) countSpan.innerText = count;
     });
     
-    // Update the vote count display
     const voteCountDisplay = document.getElementById('voteCountDisplay');
     if (voteCountDisplay) {
         const votedCount = currentGame.hasVoted.filter(v => v === true).length;
-        voteCountDisplay.innerHTML = `<i class="fas fa-chart-simple"></i> Votes cast: ${votedCount} / ${currentGame.players.length}`;
+        voteCountDisplay.innerHTML = `<i class="fas fa-chart-simple"></i> 🗳️ VOTES CAST: ${votedCount} / ${currentGame.players.length} 🗳️`;
         
-        // Change color when all votes are cast
         if (votedCount === currentGame.players.length) {
-            voteCountDisplay.style.background = '#006400';
-            voteCountDisplay.style.color = '#FFE87C';
+            voteCountDisplay.classList.add('complete');
+        } else {
+            voteCountDisplay.classList.remove('complete');
         }
     }
 }
@@ -723,24 +712,36 @@ function showResult(accusedIdx, wasCorrect) {
     const resultTitle = document.getElementById('resultTitle');
     const resultBody = document.getElementById('resultBody');
     const resultHeader = document.getElementById('resultHeader');
+    const resultCard = document.querySelector('.result-card');
+    
+    // Remove previous classes
+    resultCard.classList.remove('win', 'loss');
     
     if (wasCorrect) {
-        resultTitle.innerText = '🎭 IMPOSTER CAUGHT!';
-        resultHeader.style.background = '#006400';
+        resultCard.classList.add('win');
+        resultTitle.innerText = '🎭 IMPOSTER CAUGHT! 🎭';
+        resultHeader.style.background = 'linear-gradient(135deg, #006400 0%, #00AA00 50%, #006400 100%)';
         resultBody.innerHTML = `
-            <p>The crew voted out <strong>${escapeHtml(accusedName)}</strong>!</p>
-            <div class="result-word">🔍 ${escapeHtml(currentGame.wordObj.word)}</div>
-            <p>The real imposter was <strong>${escapeHtml(imposterName)}</strong>.</p>
-            <p>🏆 Crew wins!</p>
+            <div style="text-align:center">
+                <i class="fas fa-check-circle" style="font-size:3rem; color:#00AA00; margin-bottom:1rem"></i>
+                <p>The crew voted out <strong style="color:#006400">${escapeHtml(accusedName)}</strong>!</p>
+                <div class="result-word">🔍 ${escapeHtml(currentGame.wordObj.word)} 🔍</div>
+                <p>The real imposter was <strong style="color:#006400">${escapeHtml(imposterName)}</strong>.</p>
+                <p style="font-size:1.5rem; margin-top:0.5rem">🏆 CREW VICTORY! 🏆</p>
+            </div>
         `;
     } else {
-        resultTitle.innerText = '😈 IMPOSTER WINS!';
-        resultHeader.style.background = '#8B0000';
+        resultCard.classList.add('loss');
+        resultTitle.innerText = '😈 IMPOSTER WINS! 😈';
+        resultHeader.style.background = 'linear-gradient(135deg, #4a0000 0%, #8B0000 50%, #4a0000 100%)';
         resultBody.innerHTML = `
-            <p>The crew accused <strong>${escapeHtml(accusedName)}</strong>... but they were innocent!</p>
-            <div class="result-word">🔍 The secret word was: ${escapeHtml(currentGame.wordObj.word)}</div>
-            <p>The imposter <strong>${escapeHtml(imposterName)}</strong> fooled everyone.</p>
-            <p>💀 Imposter victory!</p>
+            <div style="text-align:center">
+                <i class="fas fa-skull-crossbones" style="font-size:3rem; color:#8B0000; margin-bottom:1rem"></i>
+                <p>The crew accused <strong style="color:#8B0000">${escapeHtml(accusedName)}</strong>... but they were innocent!</p>
+                <div class="result-word">🔍 The secret word was: ${escapeHtml(currentGame.wordObj.word)} 🔍</div>
+                <p>The imposter <strong style="color:#8B0000">${escapeHtml(imposterName)}</strong> fooled everyone.</p>
+                <p style="font-size:1.5rem; margin-top:0.5rem">💀 IMPOSTER VICTORY! 💀</p>
+            </div>
         `;
     }
     document.getElementById('resultModal').classList.add('active');
@@ -789,8 +790,15 @@ function initGameModal() {
 }
 
 function initSocialLinks() {
-    const links = { instaLink: 'https://instagram.com', tiktokLink: 'https://tiktok.com', githubLink: 'https://github.com' };
-    Object.entries(links).forEach(([id, url]) => { document.getElementById(id)?.addEventListener('click', (e) => { e.preventDefault(); window.open(url, '_blank'); }); });
+    // Your social links
+    const instaLink = document.getElementById('instaLink');
+    const tiktokLink = document.getElementById('tiktokLink');
+    const githubLink = document.getElementById('githubLink');
+    
+    if (instaLink) instaLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://instagram.com/_arsu.x', '_blank'); });
+    if (tiktokLink) tiktokLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://tiktok.com/@my.ville', '_blank'); });
+    if (githubLink) githubLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://github.com/Arfadh-Subhan', '_blank'); });
+    
     const shareUrl = encodeURIComponent(window.location.href);
     const shareText = encodeURIComponent('Play IMPOSTER - the ultimate bluffing party game! 🎭');
     document.getElementById('shareTwitter')?.addEventListener('click', () => window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`, '_blank'));
