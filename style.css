@@ -1717,3 +1717,86 @@ body {
 *{ -webkit-touch-callout:none !important; -webkit-user-select:none !important; user-select:none !important; -webkit-tap-highlight-color:transparent !important; }
 input, textarea { -webkit-user-select:text !important; user-select:text !important; }
 
+/* ========= COOL HAMBURGER MENU ANIMATION ========= */
+
+/* The 3 lines */
+.nav-toggle {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.nav-toggle i {
+    font-size: 1.8rem;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Rotate and scale animation when menu opens */
+.nav-menu.active ~ .nav-toggle i {
+    transform: rotate(180deg) scale(1.1);
+    color: #FFE87C;
+    text-shadow: 0 0 8px rgba(255, 232, 124, 0.5);
+}
+
+/* Pulsing effect on click */
+.nav-toggle:active i {
+    transform: scale(0.85);
+    transition: transform 0.1s;
+}
+
+/* Menu dropdown animation */
+.nav-menu {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top right;
+}
+
+.nav-menu.active {
+    animation: menuBounce 0.35s ease forwards;
+}
+
+@keyframes menuBounce {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+        visibility: hidden;
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.02) translateY(2px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        visibility: visible;
+    }
+}
+
+/* Menu items slide in with stagger */
+.nav-menu.active .nav-link {
+    animation: itemSlide 0.25s ease forwards;
+    opacity: 0;
+}
+
+.nav-menu.active .nav-link:nth-child(1) { animation-delay: 0.05s; }
+.nav-menu.active .nav-link:nth-child(2) { animation-delay: 0.1s; }
+.nav-menu.active .nav-link:nth-child(3) { animation-delay: 0.15s; }
+
+@keyframes itemSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Add a subtle glow effect when menu is open */
+body.menu-open {
+    overflow: hidden;
+}
