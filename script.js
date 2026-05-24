@@ -1053,43 +1053,31 @@ function renderFlipCard() {
     const card = document.getElementById('activeFlipCard');
     let holdTimer = null;
     
-    const startHold = (e) => {
-        if (e) e.preventDefault();  // Prevents text selection
+    const startHold = () => {
         holdTimer = setTimeout(() => {
+            card.classList.add('flipped');
+            // Check if this is the FIRST time this player flips
             if (!currentGame.revealed[idx]) {
-                card.classList.add('flipped');
                 currentGame.revealed[idx] = true;
                 updateRevealButtons();
             }
-        }, 200);
+        }, 150);
     };
-
-    const endHold = (e) => {
-        if (e) e.preventDefault();
-        if (holdTimer) clearTimeout(holdTimer);
-        if (card.classList.contains('flipped')) card.classList.remove('flipped');
+    
+    const endHold = () => {
+        if (holdTimer) {
+            clearTimeout(holdTimer);
+            holdTimer = null;
+        }
+        card.classList.remove('flipped');
     };
-
-    // Mouse events
+    
     card.addEventListener('mousedown', startHold);
     card.addEventListener('mouseup', endHold);
     card.addEventListener('mouseleave', endHold);
-
-    // Touch events with preventDefault
-    card.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        startHold(e);
-    }, { passive: false });
-
-    card.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        endHold(e);
-    });
-
-    card.addEventListener('touchcancel', (e) => {
-        e.preventDefault();
-        endHold(e);
-    });
+    card.addEventListener('touchstart', startHold, {passive: false});
+    card.addEventListener('touchend', endHold);
+    card.addEventListener('touchcancel', endHold);
     
     container.classList.remove('enter-right');
     void container.offsetWidth;
