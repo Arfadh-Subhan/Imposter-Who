@@ -1675,18 +1675,12 @@ body {
     }
 }
 
-/* ========= PREVENT TEXT SELECTION ON TAP-HOLD ========= */
+/* ========= PREVENT TEXT SELECTION ON TAP-HOLD (Without breaking flip) ========= */
 .flip-card,
 .flip-card *,
 .flip-front,
 .flip-back,
-.flip-card-inner,
-.cell,
-.tile,
-.key-btn,
-button,
-.game-container,
-.modal-card {
+.flip-card-inner {
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     -khtml-user-select: none !important;
@@ -1696,8 +1690,14 @@ button,
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Prevent text selection on ALL game elements */
-.flip-card, .flip-card * {
+/* Also apply to any clickable elements that might show text selection */
+.category-card,
+.btn-play,
+.btn-control,
+.tile,
+.key-btn,
+.cell,
+.vote-card {
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
